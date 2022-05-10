@@ -1,0 +1,37 @@
+{
+  "title": "Company App",
+  "api": {
+    "baseURL": "https://api.gravitee.io",
+    "services": [
+      {
+        "name": "Api 1",
+        "contributor": "By Gravitee.io",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id lorem et leo ornare sollicitudin.",
+        "path": "/api1"
+      },
+      {
+        "name": "Api 2",
+        "contributor": "By Gravitee.io",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id lorem et leo ornare sollicitudin.",
+        "path": "/api2"
+      },
+      {
+        "name": "Api 3",
+        "contributor": "By Gravitee.io",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id lorem et leo ornare sollicitudin.",
+        "path": "/api3"
+      }
+    ]
+  },
+  "auth": {
+    "baseURL": "https://auth.gravitee.io",
+    "domain": "domain",
+    "clientId": "test"
+  },
+  "ciba": {
+    "enabled": true,
+    "websocketEndpoint": "wss://auth.gravitee.io/ws",
+    "clientId": "cibaclientid",
+    "clientSecret": "cibasecret"
+  }
+}

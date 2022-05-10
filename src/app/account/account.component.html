@@ -1,0 +1,157 @@
+<!--
+
+    Copyright (C) 2015 The Gravitee team (http://gravitee.io)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<div class="page-container">
+  <a mat-stroked-button [routerLink]="['']"><- Back to home</a>
+  <div class="page-account-title">
+    <img [src]="'assets/default-account-icon.png'" alt="Photo of a user" [width]="'120'" style="border-radius: 50%;"/>
+    <div style="padding: 20px;">
+      <h3>{{user?.displayName}}</h3>
+      <p>Manage your account including the ability to consult your profile information, add MFA factors, update your password and more.</p>
+    </div>
+  </div>
+  <mat-tab-group style="margin-top: 20px;">
+    <mat-tab label="Profile">
+      <div class="terminal">
+        <pre>{{user | json}}</pre>
+      </div>
+    </mat-tab>
+    <mat-tab label="MFA">
+      <div class="mfa-content">
+        <h3 class="h3-font">My factors</h3>
+        <mat-divider></mat-divider>
+        <div style="padding: 10px;">
+          <table mat-table [dataSource]="enrolledFactors" style="width: 100%;">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef> Name </th>
+              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef> Type </th>
+              <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> Actions </th>
+              <td mat-cell *matCellDef="let element"> <mat-slide-toggle [checked]="element.primary" (change)="updateFactor(element.id, $event)">Set as primary</mat-slide-toggle></td>
+              <td mat-cell *matCellDef="let element"> <a (click)="removeFactor(element.id)" style="cursor: pointer; color: blue;">>> Remove factor</a> </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['name', 'type', 'actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['name', 'type', 'actions'];"></tr>
+          </table>
+        </div>
+
+        <h3 class="h3-font">Factors catalog</h3>
+        <mat-divider></mat-divider>
+        <div style="padding: 10px;">
+          <mat-accordion>
+            <mat-expansion-panel *ngFor="let factor of factorsCatalog">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{factor.name}}
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{factor.type}}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <p *ngIf="factor.factorType === 'EMAIL'">
+                <mat-form-field appearance="fill" style="width: 300px;">
+                  <mat-label>Email</mat-label>
+                  <input matInput name="userEmail" placeholder="Please confirm your email address" [(ngModel)]="userEmail">
+                </mat-form-field>
+              </p>
+              <p *ngIf="factor.factorType === 'SMS' || factor.factorType === 'CALL'">
+                <mat-form-field appearance="fill" style="width: 300px;">
+                  <mat-label>Phone number</mat-label>
+                  <input matInput name="phoneNumber" placeholder="Please confirm your phone number" [(ngModel)]="phoneNumber">
+                </mat-form-field>
+              </p>
+              <p><a (click)="enrollFactor(factor)" style="cursor: pointer; color: blue;">>> Enroll this factor</a></p>
+              <div *ngIf="enrolledFactor">
+                <div style="display: flex;">
+                  <pre>{{enrolledFactor | json}}</pre>
+                  <img *ngIf="qrCode" [src]="qrCode" height="200px"/>
+                </div>
+                <p>
+                  <mat-form-field appearance="fill">
+                    <mat-label>Code</mat-label>
+                    <input matInput name="enrollmentCode" [(ngModel)]="enrollmentCode">
+                  </mat-form-field>
+                </p>
+                <p><a (click)="verifyFactor(factor)" style="cursor: pointer; color: blue;">>> Verify this factor</a></p>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+
+        <div style="padding: 10px;">
+          <h3 class="h3-font">Recovery Codes</h3>
+          <button mat-raised-button (click)="generateRecoveryCodes()">Generate</button>
+
+          <mat-accordion class="accordion-margin" *ngIf="recoveryCodes && recoveryCodes.length > 0">
+            <mat-expansion-panel class="accordion-margin">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  My Recovery Codes
+                </mat-panel-title>
+
+              </mat-expansion-panel-header>
+              <ul>
+                <li *ngFor="let item of recoveryCodes; let i = index" [attr.data-index]="i">
+                  {{item}}
+                </li>
+              </ul>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Update Password">
+      <div class="mfa-content">
+        <h3>Update Password</h3>
+        <mat-divider></mat-divider>
+        <div style="padding: 10px;">
+          <p>
+            <mat-form-field appearance="fill">
+              <mat-label>New Password</mat-label>
+              <input matInput name="newPassword" [(ngModel)]="newPassword">
+            </mat-form-field>
+          </p>
+          <p><a (click)="updatePassword(newPassword)" style="cursor: pointer; color: blue;">>> Update Password</a></p>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab *ngIf="useCiba" label="CIBA Notifications">
+      <div class="mfa-content">
+        <h3>Your CIBA notifications</h3>
+        <mat-divider></mat-divider>
+        <div *ngFor="let notification of notificationRequests">
+          <p width="150px" height="auto">
+            <mat-icon>{{notificationStatusIcon(notification)}}</mat-icon>
+            {{notification.message}}
+          </p>
+
+          <button mat-button *ngIf="notification.action == 'pending'" (click)="onRejectClick(notification)">Reject</button>
+          <button mat-button *ngIf="notification.action == 'pending'" (click)="onAcceptClick(notification)">Accept</button>
+          <mat-divider></mat-divider>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
