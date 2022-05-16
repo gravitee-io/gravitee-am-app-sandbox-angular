@@ -26,6 +26,7 @@ import {webSocket, WebSocketSubject} from "rxjs/webSocket";
 export class AccountComponent implements OnInit {
   private baseURL: string;
   private domain: string;
+  private clientId: string;
   private websocket: WebSocketSubject<any>;
   user: any;
   enrolledFactors: any[] = [];
@@ -39,6 +40,7 @@ export class AccountComponent implements OnInit {
   recoveryCodes: any[];
   useCiba: boolean;
   notificationRequests: Array<any> = [];
+  consent: any[];
 
   constructor(private configurationService: ConfigurationService,
               private httpClient: HttpClient) {
@@ -46,6 +48,7 @@ export class AccountComponent implements OnInit {
     const cibaConfig = this.configurationService.get('ciba');
     this.baseURL = authConfig.baseURL;
     this.domain = authConfig.domain;
+    this.clientId = authConfig.clientId;
     this.useCiba = cibaConfig && cibaConfig.enabled;
     if (this.useCiba) {
       this.websocket = webSocket(cibaConfig.websocketEndpoint);
@@ -66,6 +69,7 @@ export class AccountComponent implements OnInit {
     this.getEnrolledFactors();
     this.getRecoveryCodes();
     this.registerCibaSubject();
+    this.getConsent();
   }
 
   enrollFactor(factor) {
@@ -148,6 +152,13 @@ export class AccountComponent implements OnInit {
     }
   }
 
+  removeConsent(consentId) {
+    this.httpClient.delete<any>(this.baseURL + '/' + this.domain + '/account/api/consent/' + consentId).subscribe(response => {
+      // revoke consent also revoke the current token, re-authenticate the user
+      window.location.href = this.baseURL + '/' + this.domain + '/oauth/authorize?client_id=' + this.clientId + '&response_type=token&redirect_uri=' + window.location.origin + '/login/callback';
+    });
+  }
+
   private getProfile() {
     this.user = 'Loading ...';
     this.httpClient.get<any>(this.baseURL + '/' + this.domain + '/account/api/profile').subscribe(response => {
@@ -197,6 +208,12 @@ export class AccountComponent implements OnInit {
       };
       this.websocket.next(initMsg);
     });
+  }
+
+  private getConsent() {
+    this.httpClient.get<any>(this.baseURL + '/' + this.domain + '/account/api/consent').subscribe(consent => {
+      this.consent = consent;
+    })
   }
 
   private registerCibaNotification(notificationRequest) {

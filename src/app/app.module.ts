@@ -46,6 +46,7 @@ import { SnackbarComponent } from "./components/snackbar/snackbar.component";
 import { MatListModule } from "@angular/material/list";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { NavbarComponent } from "./components/navbar/navbar.component";
+import { PaymentComponent } from "./payment/payment.component";
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { NavbarComponent } from "./components/navbar/navbar.component";
     LoginCallbackComponent,
     LogoutCallbackComponent,
     SnackbarComponent,
-    NavbarComponent
+    NavbarComponent,
+    PaymentComponent
   ],
   imports: [
     BrowserModule,

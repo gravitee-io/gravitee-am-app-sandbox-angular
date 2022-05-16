@@ -42,6 +42,10 @@
           <mat-icon>tap_and_play</mat-icon>
           <span>CIBA</span>
         </a>
+        <a [routerLink]="['payment']" mat-menu-item>
+          <mat-icon>payments</mat-icon>
+          <span>Payment</span>
+        </a>
         <a (click)="signOut()" mat-menu-item>
           <mat-icon>exit_to_app</mat-icon>
           <span>Sign Out</span>
