@@ -20,11 +20,13 @@ import { ApisComponent } from "./apis/apis.component";
 import { LoginCallbackComponent } from "./login/login-callback.component";
 import { LogoutCallbackComponent } from "./logout/logout-callback.component";
 import { CibaComponent } from "./ciba/ciba.component";
+import { PaymentComponent } from "./payment/payment.component";
 
 const routes: Routes = [
   { path: 'apis', component: ApisComponent },
   { path: 'account', component: AccountComponent},
   { path: 'ciba', component: CibaComponent },
+  { path: 'payment', component: PaymentComponent },
   { path: 'login/callback', component: LoginCallbackComponent },
   { path: 'logout/callback', component: LogoutCallbackComponent },
   { path: '', redirectTo: 'apis', pathMatch: 'full'},
