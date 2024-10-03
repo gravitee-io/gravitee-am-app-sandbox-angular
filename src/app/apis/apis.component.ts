@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, OnInit } from '@angular/core';
-import { ConfigurationService } from "../services/configuration.service";
 import { HttpClient } from "@angular/common/http";
+import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfigurationService } from "../services/configuration.service";
 
 @Component({
   selector: 'app-apis',
@@ -26,20 +27,33 @@ export class ApisComponent implements OnInit {
   apis: any = [];
   response: any;
 
-  constructor(private configurationService: ConfigurationService,
-              private httpClient: HttpClient) { }
+  constructor(
+    private configurationService: ConfigurationService,
+    private httpClient: HttpClient,
+    private snackBar: MatSnackBar // Inject MatSnackBar
+  ) { }
 
   ngOnInit(): void {
     this.apis = this.configurationService.get('api').services;
   }
 
-  call(path: string): void {
+  call(path: string, name: string): void {
     const apiConfig = this.configurationService.get('api');
-    this.httpClient.get<any>(apiConfig.baseURL + path)
+    this.httpClient.get<any>(apiConfig.baseURL + path, { observe: 'response' })
       .subscribe(
-        response => setTimeout(() => this.response = response, 1500),
-        error => console.log(error)
+        response => {
+          setTimeout(() => this.response = response, 1500);
+          console.log(name)
+          this.snackBar.open(`API call successful to ${name}! Status: ${response.status}`, 'Close', { // Success message
+            duration: 3000,
+          });
+        },
+        error => {
+          console.error(error);
+          this.snackBar.open(`API call failed to ${name}: ` + error.message, 'Close', { // Error message
+            duration: 5000,
+          });
+        }
       );
   }
-
 }

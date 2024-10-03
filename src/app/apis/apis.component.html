@@ -17,18 +17,17 @@
 -->
 <div>
   <div class="title-section">
-    <h1>Gravitee AM Sandbox</h1>
-    <p>Available APIs to get started</p>
-    <small>User must authenticated before calling these services</small>
+    <h1>Impellam Dashboard</h1>
+    <p>Applications offered by Impellam</p>
+    <small>User can only access applications they are granted access to</small>
   </div>
-  <div class="message">
-  </div>
+  <div class="message"></div>
   <div class="card-container">
-    <a class="card" *ngFor="let api of apis" (click)="call(api.path)">
-      <img width="40" alt="Company Logo" src="assets/default-api-icon.svg"/>
-      <h3>{{api.name}}</h3>
-      <p>{{api.contributor}}</p>
-      <p>{{api.description}}</p>
+    <a class="card" *ngFor="let api of apis" (click)="call(api.path, api.name)">
+      <img width="40" alt="Company Logo" src="assets/default-api-icon.svg" />
+      <h3>{{ api.name }}</h3>
+      <p>{{ api.contributor }}</p>
+      <p>{{ api.description }}</p>
     </a>
   </div>
 </div>

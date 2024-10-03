@@ -1,32 +1,32 @@
 {
   "title": "Company App",
   "api": {
-    "baseURL": "https://api.gravitee.io",
+    "baseURL": "https://demo-apim-gateway-dev.michael.gravitee.xyz/auth",
     "services": [
       {
-        "name": "Api 1",
-        "contributor": "By Gravitee.io",
+        "name": "Customer Application 1",
+        "contributor": "Requires user access",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id lorem et leo ornare sollicitudin.",
-        "path": "/api1"
+        "path": "/echo"
       },
       {
-        "name": "Api 2",
-        "contributor": "By Gravitee.io",
+        "name": "Customer Application 2",
+        "contributor": "Requires manager access",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id lorem et leo ornare sollicitudin.",
-        "path": "/api2"
+        "path": "/whattimeisit"
       },
       {
-        "name": "Api 3",
-        "contributor": "By Gravitee.io",
+        "name": "Admin Application",
+        "contributor": "Requires admin access",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id lorem et leo ornare sollicitudin.",
-        "path": "/api3"
+        "path": "/whoami"
       }
     ]
   },
   "auth": {
-    "baseURL": "https://auth.gravitee.io",
-    "domain": "domain",
-    "clientId": "test"
+    "baseURL": "https://demo-am-gateway.michael.gravitee.xyz",
+    "domain": "demos",
+    "clientId": "591bd0f2-bdf6-4304-9bd0-f2bdf6630488"
   },
   "ciba": {
     "enabled": true,
